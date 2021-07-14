@@ -5,11 +5,13 @@ import jieba  # 分词处理
 import numpy  # 图片的转换
 from PIL import Image  # 图片处理
 from wordcloud import WordCloud  # 词云制作
+from time import sleep #设置睡眠时间
 
-def get_comment_csv(driver,x,m):
+def get_comment_csv(x,m):
+    driver = webdriver.Firefox()
     url = 'https://music.163.com/#/song?id='+x  # 歌曲页面的URL地址
     driver.get(url)
-    driver.implicitly_wait(10)  # 显式等待1秒
+    driver.implicitly_wait(30)  # 显式等待10秒
     driver.switch_to.frame('contentFrame')  # 切入contentFrame
     comments_list = []
     for i in range(300):  # 爬取评论的页数
@@ -36,17 +38,15 @@ def make_world_cloud(filename,i):
     print('successfully delete')
     # 利用jieba库进行分词处理,需要将歌名加入词库
     jieba.load_userdict('C:\\Users\\lenovo\\Desktop\\song and singer name of wangyiyun.txt')
-    comment_text2 = jieba.cut(comment_text1, cut_all=False)
-    comment_text = ' '
-    for comment in comment_text2:
-        comment_text = comment_text + comment + ' '
+    comment_cut = jieba.cut(comment_text)#使用cut函数进行分词
+    comment_text = ''.join(comment_cut)
     print('successfully separate')
     # 打开图片并转换为数组形式
-    imagename = 'C:\\Users\\lenovo\\Desktop\\bg' + str(i) + '.jpg'
+    imagename = 'C:\\Users\\lenovo\\Desktop\\wbg\\bg' + str(i) + '.png'
     photo = numpy.array(Image.open(imagename))
     # 指定字体、背景颜色、宽高、词量、指定的背景图
-    wc = WordCloud(font_path='C:/Windows/Fonts/simsun.ttc', background_color="white", width=913, height=900,
-                   max_words=2000, mask=photo)
+    wc = WordCloud(font_path='C:/Windows/Fonts/simsun.ttc', background_color="white", width=1200, height=900,
+                   max_words=400, mask=photo)
     # 生成词云
     wc.generate(comment_text)
     # 展示词云
@@ -56,10 +56,12 @@ def make_world_cloud(filename,i):
     savename = 'worldcloud' + str(i) + '.png'
     wc.to_file(savename)
     print('world_cloud image successfully save')
-def main1():
+def main():
     x = ['1463165983', '1481164987', '1487528112', '1436709403', '1430583016', '1442508316', '1413142894', '1443838552',
          '1413585838', '1436910205']
     for i in range(10):
-        filename=get_comment_csv(x[i],i+1)
+        filename = get_comment_csv(x[i], i + 1)
         make_world_cloud(filename,i+1)
-main1()
+main()
+
+
