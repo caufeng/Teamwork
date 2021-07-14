@@ -1,1 +1,4 @@
-
+song and singer name of qq（wangyiyun）是爬取歌单的歌曲名和歌手名，防止分词时被切碎
+stopwords是根据实际列举的停用词，防止高频出现影响词云图美观
+qbg（wbg）是QQ音乐（网易云）歌单歌星的照片，用来做词云图的背景
+get comments from qq(wangyiyun).py是从QQ音乐（网易云）中爬取歌单评论
